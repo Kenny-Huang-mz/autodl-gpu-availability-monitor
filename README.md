@@ -1,88 +1,51 @@
 # AutoDL GPU Availability Monitor
 
-[English](README_EN.md) · [隐私政策](PRIVACY.md) · [更新日志](CHANGELOG.md)
+一个帮你盯着 AutoDL GPU 什么时候空出来的浏览器扩展。
 
-一个面向 AutoDL 已租实例的开源浏览器扩展。当关机实例重新显示“GPU充足”时，通过页面横幅、声音和系统通知提醒你。
+## 我为什么做它
 
-> 非 AutoDL 官方产品。扩展只负责提醒，不会自动开机、下单或产生费用。
+我经常在 AutoDL 租服务器，最头疼的不是训练慢，而是明明实例已经租好了，却因为宿主机上的 GPU 被别人占着，暂时开不了机。
 
-## 为什么需要它
+AutoDL 会在 GPU 空出来后显示一行绿色的“GPU充足”，问题是——谁有空一直刷新网页看它？
 
-AutoDL 的已租实例有时会因宿主机 GPU 被其他用户占用而无法开机。平台会在 GPU 重新可用时显示“GPU充足”，但用户通常需要不断手动刷新页面。本扩展将这个检查过程自动化。
+所以我做了这个小扩展。你只要告诉它想等哪台实例，然后把 AutoDL 页面留在浏览器里。GPU 一旦空出来，它就会弹窗、响铃，把你叫回来。
 
-## 功能
+![Chrome](https://img.shields.io/badge/Chrome-supported-4285F4?logo=googlechrome&logoColor=white)
+![Edge](https://img.shields.io/badge/Edge-supported-0078D7?logo=microsoftedge&logoColor=white)
+![Arc](https://img.shields.io/badge/Arc-supported-FCBFBD)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-- 按实例名称或实例 ID 监控多个已租实例
-- GPU 可用时显示页内横幅、浏览器系统通知并响铃
-- 支持“仅响一次”与“持续响铃”，重复间隔可配置
-- 页面状态面板显示监控目标、最近检查时间及运行日志
-- 严格按实例行判断，避免把相邻实例的“GPU充足”误归到目标实例
-- 识别异常会明确提示，并可一键复制诊断信息
-- 配置使用浏览器同步存储；不读取或保存 AutoDL 密码、Cookie、令牌
-- Chrome、Edge、Arc 等 Chromium 浏览器均可使用
+## 它能做什么
+
+- 同时盯住多台实例，名称或实例 ID 都可以
+- GPU 空出来时弹出提示、发送系统通知并响铃
+- 可以只响一次，也可以持续响到你回来
+- 页面右下角会告诉你它有没有正常工作
+- 识别出问题时可以一键复制诊断信息，方便反馈
+
+它只负责提醒，**不会替你开机，也不会偷偷产生费用**。
 
 ## 安装
 
-1. 从 Releases 下载 `autodl-gpu-monitor-extension-vX.Y.Z.zip` 并解压，或直接下载本仓库。
-2. 打开扩展管理页面：Chrome `chrome://extensions`、Edge `edge://extensions`、Arc `arc://extensions`。
-3. 开启“开发者模式”。
-4. 点击“加载已解压的扩展程序”，选择解压后的项目文件夹或仓库根目录。
+1. 在 [Releases](https://github.com/Kenny-Huang-mz/autodl-gpu-availability-monitor/releases) 下载最新 ZIP 并解压。
+2. 打开浏览器的扩展管理页：Chrome `chrome://extensions`、Edge `edge://extensions`、Arc `arc://extensions`。
+3. 打开“开发者模式”，选择“加载已解压的扩展程序”。
+4. 选中刚才解压出来的文件夹。
 
-## 使用
+装好后，打开 AutoDL 的“容器实例”页面并刷新。点击扩展图标，填入想监控的实例名称或 ID，保存就可以了。
 
-1. 打开 AutoDL 控制台的“容器实例”页面并刷新一次。
-2. 点击扩展图标。
-3. 输入实例名称或实例 ID；多个目标使用逗号或换行分隔。
-4. 设置刷新与响铃方式，然后保存。
-5. 检查右下角状态面板是否显示“运行正常”。
+> 记得把之前的 Violentmonkey/Tampermonkey 版本关掉，不然两个版本可能一起刷新、一起响。
 
-检测到 GPU 后，点击绿色横幅中的“停止声音”可以静音本轮提醒。扩展观察到目标 GPU 不再充足后会自动复位，下一次释放时重新响铃。
+## 使用时需要知道
 
-## 常见问题
+目前扩展是通过 AutoDL 实例页面判断状态的，所以浏览器要保持运行，并留着这个页面。它不会读取你的密码、Cookie 或登录令牌，也不会把实例信息发送给我。
 
-### 页面显示“识别异常”
+如果右下角显示“识别异常”，先检查实例名称是否完全一致；还不行的话，点一下“复制诊断”，然后来 [提个 Issue](https://github.com/Kenny-Huang-mz/autodl-gpu-availability-monitor/issues)。请不要在 Issue 里粘贴 Cookie 或登录令牌。
 
-确认实例名称/ID 完全正确并刷新 AutoDL 页面。如果问题仍存在，点击“复制诊断”，提交 Issue 时粘贴结果。请勿提交 Cookie、令牌等敏感信息。
+## 最后
 
-### 有绿色横幅但没有系统通知
+这是我自己遇到问题后做出来的小工具，目前还是第一个版本。AutoDL 改版可能会让识别暂时失效，如果你发现 bug，欢迎告诉我；有好点子也欢迎一起折腾。
 
-检查操作系统是否允许浏览器发送通知。macOS 可在“系统设置 → 通知”中查看。
+详细信息：[隐私说明](PRIVACY.md) · [更新记录](CHANGELOG.md) · [参与贡献](CONTRIBUTING.md) · [English](README_EN.md)
 
-### 为什么必须保持 AutoDL 页面打开
-
-当前版本在已登录的实例页面中读取可见状态并定时刷新，不保存登录凭证，也不调用非公开登录接口。因此需要保留一个 AutoDL 实例页面标签。
-
-### 页面同时出现配置窗口和状态面板
-
-配置窗口属于扩展弹窗；右下角是页面内运行状态面板。保存配置后弹窗会关闭，状态面板会继续工作。
-
-## 权限说明
-
-| 权限 | 用途 |
-| --- | --- |
-| `storage` | 保存监控目标和提醒设置 |
-| `notifications` | GPU 可用时发送系统通知 |
-| AutoDL 站点访问 | 在容器实例页面读取可见状态、显示面板 |
-
-扩展不含远程代码、统计 SDK 或广告。详见 [PRIVACY.md](PRIVACY.md)。
-
-## 开发与发布
-
-项目不需要构建步骤，源码即扩展文件：
-
-```bash
-npm run check
-npm run package
-```
-
-`npm run package` 会在 `dist/` 生成可发布 ZIP。
-
-欢迎提交 Issue 和 Pull Request。请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-## 免责声明
-
-本项目按现状提供。AutoDL 页面结构或策略变化可能导致检测失效。请以 AutoDL 页面实际状态为准，并遵守其服务条款。
-
-## License
-
-[MIT](LICENSE)
+MIT License
