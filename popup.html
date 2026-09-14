@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><link rel="stylesheet" href="popup.css"></head><body>
+  <h1>AutoDL GPU Monitor</h1>
+  <label class="switch"><input id="enabled" type="checkbox"> 启用监控</label>
+  <label>实例名称或 ID<textarea id="targets" rows="3" placeholder="多个目标用逗号分隔"></textarea></label>
+  <div class="grid"><label>刷新间隔（秒）<input id="refresh" type="number" min="30"></label><label>响铃方式<select id="mode"><option value="continuous">持续响铃</option><option value="once">仅响一次</option></select></label></div>
+  <label>重复响铃间隔（秒）<input id="alarm" type="number" min="5"></label>
+  <div id="diagnostic">尚无诊断结果</div>
+  <div class="actions"><button id="test">测试响铃</button><button id="save" class="primary">保存</button></div>
+  <script src="popup.js"></script>
+</body></html>
