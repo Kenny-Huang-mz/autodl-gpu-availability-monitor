@@ -59,16 +59,7 @@
   }
 
   function playTone() {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.frequency.value = 880;
-      gain.gain.setValueAtTime(.16, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + 1.1);
-      osc.connect(gain).connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1.1);
-    } catch (error) { addLog(`声音播放失败：${error.message}`); }
+    chrome.runtime.sendMessage({ type: 'PLAY_ALARM' });
   }
 
   function stopAlarm() {
@@ -112,6 +103,7 @@
       if (signature !== lastSignature) {
         dismissedSignature = '';
         startAlarm(signature);
+        // 系统通知和本轮第一次响铃均由扩展后台处理，避免网页自动播放限制。
         chrome.runtime.sendMessage({ type: 'GPU_AVAILABLE', summary: available.map((x) => x.preview).join('\n') });
         addLog(`发现 GPU 充足：${available.map((x) => x.target).join('、')}`);
       }

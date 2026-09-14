@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1] - 2026-09-14
+
+### Fixed
+
+- Move alarm playback from the AutoDL page to an extension offscreen document, avoiding Chromium autoplay-policy errors after automatic refreshes
+- Use a fully resolved extension URL for the notification icon and handle notification creation failures
+
 ## [1.0.0] - 2026-09-14
 
 ### Added
