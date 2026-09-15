@@ -3,12 +3,13 @@ import { execFileSync } from 'node:child_process';
 
 const manifest = JSON.parse(await readFile('manifest.json', 'utf8'));
 const required = [
-  'background.js', 'content.js', 'content.css', 'popup.html', 'popup.js', 'popup.css', 'offscreen.html', 'offscreen.js',
+  'background.js', 'content.js', 'content.css', 'popup.html', 'popup.js', 'popup.css',
+  'global-alert.js', 'offscreen.html', 'offscreen.js',
   ...Object.values(manifest.icons || {}),
 ];
 
 for (const file of required) await access(file);
-for (const file of ['background.js', 'content.js', 'popup.js', 'offscreen.js']) {
+for (const file of ['background.js', 'content.js', 'popup.js', 'global-alert.js', 'offscreen.js']) {
   execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
 }
 

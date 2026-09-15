@@ -1,19 +1,17 @@
-const defaults = { enabled: true, targets: [], refreshSeconds: 60, alarmMode: 'continuous', alarmSeconds: 15 };
+const defaults = { enabled: true, targets: [], refreshSeconds: 60, alarmMode: 'continuous', alarmSeconds: 15, alarmSound: 'classic', alarmMuted: false };
 const $ = (id) => document.getElementById(id);
-
-function activeAutoDLTab(callback) {
-  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => callback(tab));
-}
+let savedMuted = false;
 
 chrome.storage.sync.get({ config: defaults }, ({ config }) => {
   const value = { ...defaults, ...config };
+  savedMuted = value.alarmMuted;
   $('enabled').checked = value.enabled; $('targets').value = value.targets.join(', ');
-  $('refresh').value = value.refreshSeconds; $('mode').value = value.alarmMode; $('alarm').value = value.alarmSeconds;
+  $('refresh').value = value.refreshSeconds; $('mode').value = value.alarmMode; $('alarm').value = value.alarmSeconds; $('sound').value = value.alarmSound;
 });
 
 chrome.storage.local.get(['latestDiagnostic', 'lastCheckedAt'], ({ latestDiagnostic = [], lastCheckedAt }) => {
   $('diagnostic').textContent = latestDiagnostic.length
-    ? latestDiagnostic.map((x) => `${x.found ? (x.available ? '✅' : '○') : '⚠️'} ${x.target}：${x.found ? `${x.status}${x.available ? ' / GPU充足' : ''}` : x.status}`).join('\n')
+    ? latestDiagnostic.map((x) => `${x.found ? (x.available ? '✅' : x.availability === 'unknown' ? '⚠️' : '○') : '⚠️'} ${x.target}：${x.status}${x.source ? `（${x.source}）` : ''}`).join('\n')
     : '尚无诊断结果。请打开 AutoDL 容器实例页面。';
   if (lastCheckedAt) $('diagnostic').textContent += `\n检查时间：${new Date(lastCheckedAt).toLocaleTimeString()}`;
 });
@@ -25,13 +23,11 @@ $('save').onclick = () => {
     targets: $('targets').value.split(/[,，\n]/).map((x) => x.trim()).filter(Boolean),
     refreshSeconds: Math.max(30, Number($('refresh').value) || 60),
     alarmMode: $('mode').value,
-    alarmSeconds: Math.max(5, Number($('alarm').value) || 15)
+    alarmSeconds: Math.max(5, Number($('alarm').value) || 15),
+    alarmSound: $('sound').value,
+    alarmMuted: savedMuted
   };
   chrome.storage.sync.set({ config }, () => window.close());
 };
-$('test').onclick = () => activeAutoDLTab((tab) => {
-  if (!tab?.id) return;
-  chrome.tabs.sendMessage(tab.id, { type: 'TEST_SOUND' }, () => {
-    if (chrome.runtime.lastError) $('diagnostic').textContent = '请先打开并刷新 AutoDL 容器实例页面。';
-  });
-});
+$('test').onclick = () => chrome.runtime.sendMessage({ type: 'TEST_GLOBAL_ALERT' });
+$('preview').onclick = () => chrome.runtime.sendMessage({ type: 'PLAY_ALARM', sound: $('sound').value });

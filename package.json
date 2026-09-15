@@ -1,6 +1,6 @@
 {
   "name": "autodl-gpu-availability-monitor",
-  "version": "1.0.1",
+  "version": "1.2.7",
   "private": true,
   "description": "Monitor rented AutoDL instances and notify when GPU becomes available.",
   "scripts": {

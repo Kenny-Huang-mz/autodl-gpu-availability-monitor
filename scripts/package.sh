@@ -7,7 +7,7 @@ mkdir -p dist
 archive="dist/autodl-gpu-monitor-extension-v${version}.zip"
 
 zip -qr "$archive" \
-  manifest.json background.js content.js content.css popup.html popup.js popup.css offscreen.html offscreen.js \
+  manifest.json background.js content.js content.css popup.html popup.js popup.css global-alert.js offscreen.html offscreen.js \
   icon.svg icons README.md README_EN.md PRIVACY.md LICENSE CHANGELOG.md
 
 unzip -t "$archive"
